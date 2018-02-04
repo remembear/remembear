@@ -1,0 +1,39 @@
+<h1>LOGIN</h1>
+<form (ngSubmit)="login()" #loginForm="ngForm">
+  Username:
+  <input id="name" name="name" class="form-control"
+    required minlength="4" [(ngModel)]="user.username" #name="ngModel" >
+
+  <div *ngIf="name.invalid && (name.dirty || name.touched)"
+       class="alert alert-danger">
+
+    <div *ngIf="name.errors.required">
+      Name is required.
+    </div>
+    <div *ngIf="name.errors.minlength">
+      Name must be at least 4 characters long.
+    </div>
+
+  </div>
+
+  <br>
+
+  Password:
+  <input id="pass" name="pass" type="password" class="form-control"
+    required minlength="4" [(ngModel)]="user.password" #pass="ngModel" >
+
+  <div *ngIf="pass.invalid && (pass.dirty || pass.touched)"
+       class="alert alert-danger">
+
+    <div *ngIf="pass.errors.required">
+      Password is required.
+    </div>
+    <div *ngIf="pass.errors.minlength">
+      Password must be at least 4 characters long.
+    </div>
+
+  </div>
+
+  <br>
+  <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Login</button>
+</form>
