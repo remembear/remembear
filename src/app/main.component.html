@@ -1,18 +1,4 @@
-<div *ngIf="wordView" (window:keydown.enter)="next()" (window:keyup.enter)="answ.focus()">
-  <h1>{{word.japanese}}</h1>
-  <h2>{{word.kana}}</h2>
-  <h3>{{word.translation}}</h3>
-  <h4>{{word.info}}</h4>
-</div>
-<form *ngIf="word && !wordView" (ngSubmit)="check()" #answerForm="ngForm">
-  <h2>{{word.translation}}</h2>
-  <p>{{word.info}}</p>
-  <br>
-  <br>
-  <br>
-  <input autofocus2 id="answ" name="answ" class="form-control answer-input"
-    required minlength="1" [(ngModel)]="answer" #answ="ngModel"
-    [ngStyle]="{'background-color': bgColor}">
-  <div *ngIf="answ.invalid && (answ.dirty || answ.touched)"
-    class="alert alert-danger"></div>
-</form>
+<h2>Remembear</h2>
+<h3>Total points: {{status.totalPoints}}</h3>
+<h3>Total words: {{status.totalWordsKnown}}</h3>
+<button (click)="start()">Start</button>

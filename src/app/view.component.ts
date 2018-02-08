@@ -3,14 +3,13 @@ import { Router } from '@angular/router';
 import { StatusService } from './status.service';
 
 @Component({
-  templateUrl: './main.component.html'
+  templateUrl: './view.component.html'
 })
-export class MainComponent {
+export class ViewComponent {
 
   constructor(private status: StatusService, public router: Router) {}
 
-  start() {
-    this.status.startStudy();
+  next() {
     this.router.navigate(['/study']);
   }
 

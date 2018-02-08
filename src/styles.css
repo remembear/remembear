@@ -9,7 +9,7 @@ html, body { height: 100%; }
 h1, h2, h3, h4, p, body, button, input, select, .ngdialog.ngdialog-theme-default .ngdialog-content {
   font-family: Avenir Next, 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', sans-serif !important;
   text-align: center;
-  font-weight: 300;
+  font-weight: 200;
   font-size: 16px;
   background-color: #fdfdfd;
   padding: 5px 10px;
