@@ -9,8 +9,8 @@ export class MainComponent {
 
   constructor(private status: StatusService, public router: Router) {}
 
-  start() {
-    this.status.startStudy();
+  async start() {
+    await this.status.startStudy();
     this.router.navigate(['/study']);
   }
 

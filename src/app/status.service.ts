@@ -1,19 +1,20 @@
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 
-import { ApiService, Word } from './api.service';
+import { Question } from './types';
+import { ApiService } from './api.service';
 
 @Injectable()
 export class StatusService {
 
   private WORDS_PER_STUDY = 1;
-  private wordsInCurrentStudy: Word[];
-  private wordsStillIncorrect: Word[];
+  private qsInCurrentStudy: Question[];
+  private qsStillIncorrect: Question[];
 
   public wordsKnownByLevel: number[];
   public totalPoints: number;
   public wordsStudied = 0;
-  public currentWord: Word;
+  public currentQuestion: Question;
 
   constructor(private apiService: ApiService) {
     apiService.getWordsKnownByLevel().then(n => this.wordsKnownByLevel = n);
@@ -22,29 +23,27 @@ export class StatusService {
 
   async startStudy() {
     this.wordsStudied = 0;
-    this.wordsInCurrentStudy = await Promise.all(
-      _.times(this.WORDS_PER_STUDY, this.apiService.getRandomWord));
-    this.wordsStillIncorrect = _.clone(this.wordsInCurrentStudy);
+    this.qsInCurrentStudy = await this.apiService.getNewQuestions();
+    console.log(this.qsInCurrentStudy)
+    this.qsStillIncorrect = _.clone(this.qsInCurrentStudy);
   }
 
-  async nextWord(): Promise<Word> {
+  async nextWord(): Promise<Question> {
     this.wordsStudied++;
-    this.totalWordsKnown++;
     this.totalPoints += 150;
-    let nextIndex = _.random(this.wordsStillIncorrect.length);
-    this.currentWord = this.wordsStillIncorrect[nextIndex];
-    return this.currentWord;
+    let nextIndex = _.random(this.qsStillIncorrect.length-1);
+    this.currentQuestion = this.qsStillIncorrect[nextIndex];
+    return this.currentQuestion;
   }
 
   done(): boolean {
-    console.log(this.wordsStudied, this.WORDS_PER_STUDY)
     return this.wordsStudied >= this.WORDS_PER_STUDY;
   }
 
   playCurrentWordAudio() {
-    if (this.currentWord) {
+    if (this.currentQuestion) {
       let audio = new Audio();
-      audio.src = this.currentWord.audio;
+      audio.src = this.currentQuestion.audio;
       audio.load();
       audio.play();
     }

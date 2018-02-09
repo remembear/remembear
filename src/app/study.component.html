@@ -1,6 +1,6 @@
-<form *ngIf="status.currentWord" (ngSubmit)="check()" #answerForm="ngForm">
-  <h2>{{status.currentWord.translation}}</h2>
-  <p>{{status.currentWord.info}}</p>
+<form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm">
+  <h2>{{status.currentQuestion.question}}</h2>
+  <p>{{status.currentQuestion.info}}</p>
   <br>
   <br>
   <br>

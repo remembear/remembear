@@ -1,6 +1,6 @@
 import { browser, by, element } from 'protractor';
 
-export class RememberizePage {
+export class RemembearPage {
   navigateTo() {
     return browser.get('/');
   }

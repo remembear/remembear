@@ -1,10 +1,10 @@
-import { RememberizePage } from './app.po';
+import { RemembearPage } from './app.po';
 
-describe('rememberize App', () => {
-  let page: RememberizePage;
+describe('remembear App', () => {
+  let page: RemembearPage;
 
   beforeEach(() => {
-    page = new RememberizePage();
+    page = new RemembearPage();
   });
 
   it('should display welcome message', () => {

@@ -26,7 +26,7 @@ export class StudyComponent {
 
   private check() {
     if (this.answer && this.answer.length > 0) {
-      if (this.answer === this.status.currentWord.japanese) {
+      if (this.status.currentQuestion.answers.indexOf(this.answer) >= 0) {
         this.bgColor = 'PaleGreen';
         setTimeout(this.next.bind(this), 2500);
       } else {
