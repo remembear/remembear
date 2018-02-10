@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Question } from './types';
+import { Study, UserStatus } from './types';
 import { User } from './auth.service';
 
 @Injectable()
@@ -13,29 +13,50 @@ export class ApiService {
       .then(j => j['success']);
   }
 
-  getWordsKnownByLevel(): Promise<number[]> {
-    return Promise.resolve([0]);
+  getUserStatus(username: string): Promise<UserStatus> {
+    return this.getJsonFromApi('status', {username: username});
   }
 
-  getTotalPoints(): Promise<number> {
-    return Promise.resolve(0);
+  getNewQuestions(username: string): Promise<Study> {
+    return this.getJsonFromApi('new', {username: username});
   }
 
-  getNewQuestions(): Promise<Question[]> {
-    return this.getJsonFromApi('test');
+  getReviewQuestions(username: string): Promise<Study> {
+    return this.getJsonFromApi('review', {username: username});
+  }
+
+  async sendResults(study: Study, username: string): Promise<UserStatus> {
+    return await this.postJsonToApi('results', study, {username: username});
+  }
+
+  private postJsonToApi(path: string, json: {}, params?: {}) {
+    path = this.addParams(path, params);
+    return fetch(this.API_URL+path, {
+      method: 'post',
+      body: JSON.stringify(json),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(r => r.text())
+      .then(r => {console.log(r); return r})
+      .then(t => JSON.parse(t))
+      .catch(e => console.log(e));
   }
 
   private getJsonFromApi(path: string, params?: {}): Promise<{}> {
+    path = this.addParams(path, params);
+    return fetch(this.API_URL+path)
+      .then(r => r.text())
+      .then(t => JSON.parse(t))
+      .catch(e => console.log(e));
+  }
+
+  private addParams(path, params?: {}) {
     if (params) {
       let paramStrings = Array.from(Object.keys(params))
         .map(k => k+"="+encodeURIComponent(params[k]));
       path += '?'+paramStrings.join('&');
     }
-    return fetch(this.API_URL+path)
-      .then(r => r.text())
-      .then(r => {console.log(r); return r})
-      .then(t => JSON.parse(t))
-      .catch(e => console.log(e));
+    return path;
   }
 
 }

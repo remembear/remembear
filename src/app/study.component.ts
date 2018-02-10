@@ -6,7 +6,9 @@ import { StatusService } from './status.service';
   templateUrl: './study.component.html'
 })
 export class StudyComponent {
+  private DELAY = 2000;
   private answer: string;
+  private checked: boolean;
   private bgColor: string;
 
   constructor(private status: StatusService, public router: Router) {
@@ -14,26 +16,27 @@ export class StudyComponent {
   }
 
   private next() {
-    console.log("NExT", this.status.done())
     this.answer = null;
+    this.checked = false;
     this.bgColor = 'White';
     if (!this.status.done()) {
-      this.status.nextWord();
+      this.status.nextQuestion();
     } else {
       this.router.navigate(['/main']);
     }
   }
 
   private check() {
-    if (this.answer && this.answer.length > 0) {
-      if (this.status.currentQuestion.answers.indexOf(this.answer) >= 0) {
+    //only check once!
+    if (!this.checked && this.answer && this.answer.length > 0) {
+      this.checked = true;
+      if (this.status.checkAnswer(this.answer)) {
         this.bgColor = 'PaleGreen';
-        setTimeout(this.next.bind(this), 2500);
+        setTimeout(this.next.bind(this), this.DELAY);
       } else {
         this.bgColor = 'LightCoral';
-        setTimeout(() => this.router.navigate(['/view']), 2500);
+        setTimeout(() => this.router.navigate(['/view']), this.DELAY);
       }
-      this.status.playCurrentWordAudio();
     }
   }
 

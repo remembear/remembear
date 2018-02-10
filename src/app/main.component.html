@@ -1,4 +1,9 @@
-<h2>Remembear</h2>
-<h3>Total points: {{status.totalPoints}}</h3>
-<h3>Total words: {{status.totalWordsKnown}}</h3>
-<button (click)="start()">Start</button>
+<h2>{{status.username}}</h2>
+<div *ngIf="status.status">
+  <h3>total points: {{status.status.totalPoints}}</h3>
+  <h3>words you know: {{status.status.wordsKnownByLevel}}</h3>
+  <h3>to review: {{status.status.wordsToReviewByDirection}}</h3>
+  <h3>latest points: {{status.status.latestPoints}}</h3>
+</div>
+<button (click)="new()">new</button>
+<button (click)="review()">review</button>
