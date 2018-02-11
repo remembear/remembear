@@ -9,4 +9,6 @@
     [ngStyle]="{'background-color': bgColor}" autocomplete="off">
   <div *ngIf="answ.invalid && (answ.dirty || answ.touched)"
     class="alert alert-danger"></div>
+  <br>
+  <h3>{{status.answered ? status.currentQuestion.fullAnswers : ""}}</h3>
 </form>
