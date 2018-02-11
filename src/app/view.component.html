@@ -1,7 +1,11 @@
 <div (window:keydown.enter)="next()">
-  <h1>{{status.currentQuestion.fullAnswers}}</h1>
-  <h2>{{status.currentQuestion.otherFields}}</h2>
-  <h3>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h3>
-  <h4>{{status.currentQuestion.info}}</h4>
+  <h1>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
+  <br>
+  <h2>{{status.currentQuestion.fullAnswers}}</h2>
+  <br>
+  <h3>{{status.currentQuestion.otherFields}}</h3>
+  <br>
+  <p>{{status.currentQuestion.info}}</p>
+  <br>
   <h4>You answered: {{status.currentAnswerString}}</h4>
 </div>

@@ -1,7 +1,6 @@
 <form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm">
-  <h2>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h2>
+  <h1>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
   <p>{{status.currentQuestion.info}}</p>
-  <br>
   <br>
   <br>
   <input autofocus2 id="answ" name="answ" class="form-control answer-input"
@@ -10,5 +9,6 @@
   <div *ngIf="answ.invalid && (answ.dirty || answ.touched)"
     class="alert alert-danger"></div>
   <br>
-  <h3>{{status.answered ? status.currentQuestion.fullAnswers : ""}}</h3>
+  <br>
+  <h4>{{status.answered ? status.currentQuestion.fullAnswers : ""}}</h4>
 </form>
