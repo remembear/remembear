@@ -15,22 +15,28 @@ export class StatusService {
 
   public status: UserStatus;
   public currentQuestion: Question;
+  public isAudioQuestion: boolean;
+  public currentAnswerString: string;
   private currentAnswer: Answer;
   private answerStartTime: number;
   private answered: boolean;
 
   constructor(private authService: AuthService, private apiService: ApiService) {
     this.username = this.authService.username;
-    apiService.getUserStatus(this.username).then(s => this.status = s);
+    this.updateUserStatus();
   }
 
-  async startNewStudy() {
-    this.currentStudy = await this.apiService.getNewQuestions(this.username);
+  private updateUserStatus() {
+    this.apiService.getUserStatus(this.username).then(s => this.status = s);
+  }
+
+  async startNewStudy(setIndex: number, dirIndex: number) {
+    this.currentStudy = await this.apiService.getNewQuestions(this.username, setIndex, dirIndex);
     this.startStudy();
   }
 
-  async startReviewStudy() {
-    this.currentStudy = await this.apiService.getReviewQuestions(this.username);
+  async startReviewStudy(setIndex: number, dirIndex: number) {
+    this.currentStudy = await this.apiService.getReviewQuestions(this.username, setIndex, dirIndex);
     this.startStudy();
   }
 
@@ -46,16 +52,22 @@ export class StatusService {
     this.answered = false;
     let nextIndex = _.random(this.qsStillIncorrect.length-1);
     this.currentQuestion = this.qsStillIncorrect[nextIndex];
+    this.isAudioQuestion = this.currentQuestion.question.indexOf('.mp3') > 0;
     this.currentAnswer = this.answers.get(this.currentQuestion);
     this.answerStartTime = Date.now();
+    if (this.isAudioQuestion) {
+      this.playCurrentWordAudio();
+    }
     return this.currentQuestion;
   }
 
   checkAnswer(answer: string): boolean {
     if (!this.answered) {
+      answer = this.normalizeAnswer(answer);
       this.answered = true;
       this.playCurrentWordAudio();
       //update answer
+      this.currentAnswerString = answer;
       this.currentAnswer.duration += Date.now()-this.answerStartTime;
       this.currentAnswer.attempts.push(answer);
       //check if correct
@@ -73,12 +85,17 @@ export class StatusService {
     }
   }
 
+  private normalizeAnswer(answer: string) {
+    answer = answer.replace(/ *\([^)]*\) */g, ""); //remove parentheses
+    return _.trim(_.toLower(answer));
+  }
+
   done(): boolean {
     return this.qsStillIncorrect.length === 0;
   }
 
   playCurrentWordAudio() {
-    if (this.currentQuestion) {
+    if (this.currentQuestion && this.currentQuestion.audio) {
       let audio = new Audio();
       audio.src = this.currentQuestion.audio;
       audio.load();

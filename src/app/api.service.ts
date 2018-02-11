@@ -17,12 +17,12 @@ export class ApiService {
     return this.getJsonFromApi('status', {username: username});
   }
 
-  getNewQuestions(username: string): Promise<Study> {
-    return this.getJsonFromApi('new', {username: username});
+  getNewQuestions(username: string, setIndex: number, dirIndex: number): Promise<Study> {
+    return this.getJsonFromApi('new', {username: username, setIndex: setIndex, dirIndex: dirIndex});
   }
 
-  getReviewQuestions(username: string): Promise<Study> {
-    return this.getJsonFromApi('review', {username: username});
+  getReviewQuestions(username: string, setIndex: number, dirIndex: number): Promise<Study> {
+    return this.getJsonFromApi('review', {username: username, setIndex: setIndex, dirIndex: dirIndex});
   }
 
   async sendResults(study: Study, username: string): Promise<UserStatus> {
@@ -37,7 +37,7 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' }
     })
       .then(r => r.text())
-      .then(r => {console.log(r); return r})
+      //.then(r => {console.log(r); return r})
       .then(t => JSON.parse(t))
       .catch(e => console.log(e));
   }

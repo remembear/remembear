@@ -7,8 +7,10 @@ import { StatusService } from './status.service';
 })
 export class StudyComponent {
   private DELAY = 2000;
+  private timeout;
   private answer: string;
   private checked: boolean;
+  private correct: boolean;
   private bgColor: string;
 
   constructor(private status: StatusService, public router: Router) {
@@ -30,12 +32,21 @@ export class StudyComponent {
     //only check once!
     if (!this.checked && this.answer && this.answer.length > 0) {
       this.checked = true;
-      if (this.status.checkAnswer(this.answer)) {
+      this.correct = this.status.checkAnswer(this.answer);
+      if (this.correct) {
         this.bgColor = 'PaleGreen';
-        setTimeout(this.next.bind(this), this.DELAY);
+        this.timeout = setTimeout(this.next.bind(this), this.DELAY);
       } else {
         this.bgColor = 'LightCoral';
-        setTimeout(() => this.router.navigate(['/view']), this.DELAY);
+        this.timeout = setTimeout(() => this.router.navigate(['/view']), this.DELAY);
+      }
+    } else if (this.checked) {
+      //shortcut
+      clearTimeout(this.timeout);
+      if (this.correct) {
+        this.next();
+      } else {
+        this.router.navigate(['/view'])
       }
     }
   }

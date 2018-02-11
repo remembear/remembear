@@ -1,9 +1,15 @@
-<h2>{{status.username}}</h2>
 <div *ngIf="status.status">
-  <h3>total points: {{status.status.totalPoints}}</h3>
-  <h3>words you know: {{status.status.wordsKnownByLevel}}</h3>
-  <h3>to review: {{status.status.wordsToReviewByDirection}}</h3>
+  <h1>{{status.username}} ({{status.status.totalPoints}} points)</h1>
+  <h3>word levels: {{status.status.wordsKnownByLevel}}</h3>
   <h3>latest points: {{status.status.latestPoints}}</h3>
+  <br>
+  <br>
+  <div *ngFor="let set of sets; let s = index">
+    <div *ngFor="let dir of set.directionNames; let d = index">
+      {{set.name}} {{dir}} ({{status.status.wordsKnownByDirection[s][d]}})
+      <button (click)="new(s,d)">learn new</button>
+      <button (click)="review(s,d)" [disabled]="status.status.wordsToReviewByDirection[s][d] < 1">
+        review ({{status.status.wordsToReviewByDirection[s][d]}})</button>
+    </div>
+  </div>
 </div>
-<button (click)="new()">new</button>
-<button (click)="review()">review</button>
