@@ -1,6 +1,6 @@
 <form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm">
   <h1>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
-  <p *ngIf="!status.isAudioQuestion">{{status.currentQuestion.info}}</p>
+  <p *ngIf="!status.isAudioQuestion">{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <br>
   <input autofocus2 id="answ" name="answ" class="form-control answer-input"
@@ -11,5 +11,6 @@
   <br>
   <br>
   <h4 *ngIf="status.answered">{{status.currentQuestion.fullAnswers}}</h4>
-  <h4 *ngIf="status.answered">{{status.currentQuestion.otherFields}}</h4>
+  <h4 *ngIf="status.answered && status.currentQuestion.collection !== 'kanji'">{{status.currentQuestion.otherFields.join(' | ')}}</h4>
+  <p *ngIf="status.answered && status.currentQuestion.collection === 'kanji'">{{status.currentQuestion.otherFields.join(' | ')}}</p>
 </form>

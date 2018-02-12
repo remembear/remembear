@@ -3,9 +3,10 @@
   <br>
   <h2>{{status.currentQuestion.fullAnswers}}</h2>
   <br>
-  <h3>{{status.currentQuestion.otherFields}}</h3>
+  <h3 *ngIf="status.currentQuestion.collection !== 'kanji'">{{status.currentQuestion.otherFields.join(' | ')}}</h3>
+  <p *ngIf="status.currentQuestion.collection === 'kanji'">{{status.currentQuestion.otherFields.join(' | ')}}</p>
   <br>
-  <p>{{status.currentQuestion.info}}</p>
+  <p>{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <h4>You answered: {{status.currentAnswerString}}</h4>
 </div>
