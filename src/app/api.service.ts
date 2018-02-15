@@ -6,7 +6,7 @@ import { User } from './auth.service';
 @Injectable()
 export class ApiService {
 
-  private API_URL = "https://remembear-api.herokuapp.com/";//"http://localhost:8060/";
+  private API_URL = "http://localhost:8060/"//"https://remembear-api.herokuapp.com/";//"http://localhost:8060/";
 
   login(user: User): Promise<boolean> {
     return this.getJsonFromApi('login', user)
@@ -42,7 +42,7 @@ export class ApiService {
       .catch(e => console.log(e));
   }
 
-  private getJsonFromApi(path: string, params?: {}): Promise<{}> {
+  private getJsonFromApi(path: string, params?: {}): Promise<any> {
     path = this.addParams(path, params);
     return fetch(this.API_URL+path)
       .then(r => r.text())

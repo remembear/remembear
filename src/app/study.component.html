@@ -1,13 +1,11 @@
 <form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm">
-  <h1>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
+  <h1 (click)="status.playCurrentWordAudio()">{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
   <p *ngIf="!status.isAudioQuestion">{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <br>
   <input autofocus2 id="answ" name="answ" class="form-control answer-input"
-    required minlength="1" [(ngModel)]="answer" #answ="ngModel"
+    minlength="0" [(ngModel)]="answer" #answ="ngModel"
     [ngStyle]="{'background-color': bgColor}" autocomplete="off">
-  <div *ngIf="answ.invalid && (answ.dirty || answ.touched)"
-    class="alert alert-danger"></div>
   <br>
   <br>
   <h4 *ngIf="status.answered">{{status.currentQuestion.fullAnswers}}</h4>

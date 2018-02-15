@@ -10,7 +10,7 @@ export class ViewComponent {
   constructor(private status: StatusService, public router: Router) {}
 
   next() {
-    this.router.navigate(['/study']);
+    setTimeout(()=>this.router.navigate(['/study']), 50);
   }
 
 }

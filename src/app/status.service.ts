@@ -44,7 +44,7 @@ export class StatusService {
     this.qsStillIncorrect = _.clone(this.currentStudy.questions);
     this.answers = new Map();
     this.qsStillIncorrect.forEach(q =>
-      this.answers.set(q, {wordId: q.wordId, attempts: [], duration: 0}));
+      this.answers.set(q, {wordId: q.wordId, attempts: []}));
     this.currentStudy.startTime = new Date(Date.now());
   }
 
@@ -68,8 +68,8 @@ export class StatusService {
       this.playCurrentWordAudio();
       //update answer
       this.currentAnswerString = answer;
-      this.currentAnswer.duration += Date.now()-this.answerStartTime;
-      this.currentAnswer.attempts.push(answer);
+      let attempt = {answer: answer, duration: Date.now()-this.answerStartTime};
+      this.currentAnswer.attempts.push(attempt);
       //check if correct
       let correct = this.currentQuestion.answers.indexOf(answer) >= 0;
       if (correct) {

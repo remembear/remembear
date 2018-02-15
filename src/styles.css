@@ -30,6 +30,7 @@ button, input, select {
   border-radius:12px;
   border:1px solid #eeeeee;
   display:inline-block;
+  background-color: #ffffff;
   /*cursor:pointer;
   padding:5px 5px;*/
 }

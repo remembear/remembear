@@ -18,7 +18,7 @@ export class StudyComponent {
   }
 
   private next() {
-    this.answer = null;
+    this.answer = "";
     this.checked = false;
     this.bgColor = 'White';
     if (!this.status.done()) {
@@ -30,7 +30,7 @@ export class StudyComponent {
 
   private check() {
     //only check once!
-    if (!this.checked && this.answer && this.answer.length > 0) {
+    if (!this.checked) {
       this.checked = true;
       this.correct = this.status.checkAnswer(this.answer);
       if (this.correct) {
@@ -46,7 +46,7 @@ export class StudyComponent {
       if (this.correct) {
         this.next();
       } else {
-        this.router.navigate(['/view'])
+        setTimeout(() => this.router.navigate(['/view']), 50);
       }
     }
   }
