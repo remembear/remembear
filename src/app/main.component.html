@@ -8,7 +8,8 @@
   <div *ngFor="let set of sets; let s = index">
     <div *ngFor="let dir of set.directionNames; let d = index">
       {{set.name}} {{dir}} ({{status.status.wordsKnownByDirection[s][d]}})
-      <button (click)="new(s,d)">learn new</button>
+      <button [disabled]="s == 2 || (s == 0 && d == 1)"
+        (click)="new(s,d)">learn new</button>
       <button (click)="review(s,d)" [disabled]="status.status.wordsToReviewByDirection[s][d] < 1">
         review ({{status.status.wordsToReviewByDirection[s][d]}})</button>
     </div>
