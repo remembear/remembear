@@ -27,9 +27,12 @@ export class StatusService {
     this.updateUserStatus();
   }
 
-  private updateUserStatus() {
-    this.apiService.getUserStatus(this.username).then(s => this.status = s)
-      .then(() => this.updatePointsLine());
+  private async updateUserStatus(status?: UserStatus) {
+    if (!status) {
+      status = await this.apiService.getUserStatus(this.username);
+    }
+    this.status = status;
+    this.updatePointsLine();
   }
 
   private updatePointsLine() {
@@ -89,7 +92,7 @@ export class StatusService {
         this.currentStudy.endTime = new Date(Date.now());
         this.currentStudy.answers = Array.from(this.answers.values());
         this.apiService.sendResults(this.currentStudy, this.authService.username)
-          .then(s => this.status = s);
+          .then(s => this.updateUserStatus(s));
       }
       return correct;
     }
