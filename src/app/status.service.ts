@@ -14,6 +14,7 @@ export class StatusService {
   private answers: Map<Question, Answer>;
 
   public status: UserStatus;
+  public pointsLine = "";
   public currentQuestion: Question;
   public isAudioQuestion: boolean;
   public currentAnswerString: string;
@@ -27,7 +28,17 @@ export class StatusService {
   }
 
   private updateUserStatus() {
-    this.apiService.getUserStatus(this.username).then(s => this.status = s);
+    this.apiService.getUserStatus(this.username).then(s => this.status = s)
+      .then(() => this.updatePointsLine());
+  }
+
+  private updatePointsLine() {
+    if (this.status.pointsByDay.length > 1) {
+      let norm = 50/_.max(this.status.pointsByDay);
+      let interval = 500/(this.status.pointsByDay.length-1);
+      this.pointsLine = this.status.pointsByDay
+        .map((p,i) => (i*interval)+","+(50-(norm*p))).join(" ");
+    }
   }
 
   async startNewStudy(setIndex: number, dirIndex: number) {
@@ -63,7 +74,6 @@ export class StatusService {
 
   checkAnswer(answer: string): boolean {
     if (!this.answered) {
-      answer = this.normalizeAnswer(answer);
       this.answered = true;
       this.playCurrentWordAudio();
       //update answer
@@ -71,7 +81,7 @@ export class StatusService {
       let attempt = {answer: answer, duration: Date.now()-this.answerStartTime};
       this.currentAnswer.attempts.push(attempt);
       //check if correct
-      let correct = this.currentQuestion.answers.indexOf(answer) >= 0;
+      let correct = this.currentQuestion.answers.indexOf(this.normalizeAnswer(answer)) >= 0;
       if (correct) {
         _.remove(this.qsStillIncorrect, q => q === this.currentQuestion);
       }
@@ -87,7 +97,9 @@ export class StatusService {
 
   private normalizeAnswer(answer: string) {
     answer = answer.replace(/ *\([^)]*\) */g, ""); //remove parentheses
-    return _.trim(_.toLower(answer));
+    answer = answer.replace(/[&-.'* 。　]/g, ""); //remove special chars
+    answer = _.trim(_.toLower(answer)); //lower case and remove whitespace
+    return answer.replace(/s$/, ''); //remove trailing -s for plural
   }
 
   done(): boolean {

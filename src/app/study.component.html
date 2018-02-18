@@ -1,10 +1,10 @@
-<form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm">
+<form *ngIf="status.currentQuestion" (ngSubmit)="check()" #answerForm="ngForm" style="padding-left: 30px; padding-right: 50px;">
   <h1 (click)="status.playCurrentWordAudio()">{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
   <p *ngIf="!status.isAudioQuestion">{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <br>
   <input autofocus2 id="answ" name="answ" class="form-control answer-input"
-    minlength="0" [(ngModel)]="answer" #answ="ngModel"
+    width="100%" [(ngModel)]="answer" #answ="ngModel"
     [ngStyle]="{'background-color': bgColor}" autocomplete="off">
   <br>
   <br>

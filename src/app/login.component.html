@@ -1,6 +1,8 @@
+<div style="background-image: url('../assets/panda.png'); background-repeat: no-repeat;
+background-position: center; height: 100vh;">
 <h1>LOGIN</h1>
 <form (ngSubmit)="login()" #loginForm="ngForm">
-  Username:
+  <!--Username:-->
   <input id="name" name="name" class="form-control"
     required minlength="4" [(ngModel)]="user.username" #name="ngModel" >
 
@@ -18,7 +20,7 @@
 
   <br>
 
-  Password:
+  <!--Password:-->
   <input id="pass" name="pass" type="password" class="form-control"
     required minlength="4" [(ngModel)]="user.password" #pass="ngModel" >
 
@@ -37,3 +39,4 @@
   <br>
   <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Login</button>
 </form>
+</div>

@@ -4,10 +4,7 @@
 }
 
 html, body {
-  height: 100%;
-  /*background-image: url("assets/panda.png");
-  background-repeat: no-repeat;
-  background-position: center;*/
+  min-height: 100vh;
 }
 
 /* override ngdialog theme too.. */
@@ -23,6 +20,8 @@ h1 { font-size: 400%; }
 h2, .answer-input { font-size: 300%; }
 h3 { font-size: 200%; }
 h4 { font-size: 150%; }
+
+.answer-input { width:100% }
 
 button, input, select {
   -moz-border-radius:12px;
