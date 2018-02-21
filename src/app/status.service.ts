@@ -55,7 +55,7 @@ export class StatusService {
   }
 
   private startStudy() {
-    this.qsStillIncorrect = _.clone(this.currentStudy.questions);
+    this.qsStillIncorrect = _.shuffle(this.currentStudy.questions);
     this.answers = new Map();
     this.qsStillIncorrect.forEach(q =>
       this.answers.set(q, {wordId: q.wordId, attempts: []}));
@@ -64,8 +64,7 @@ export class StatusService {
 
   async nextQuestion(): Promise<Question> {
     this.answered = false;
-    let nextIndex = _.random(this.qsStillIncorrect.length-1);
-    this.currentQuestion = this.qsStillIncorrect[nextIndex];
+    this.currentQuestion = this.qsStillIncorrect[0];
     this.isAudioQuestion = this.currentQuestion.question.indexOf('.mp3') > 0;
     this.currentAnswer = this.answers.get(this.currentQuestion);
     this.answerStartTime = Date.now();
@@ -85,8 +84,9 @@ export class StatusService {
       this.currentAnswer.attempts.push(attempt);
       //check if correct
       let correct = this.currentQuestion.answers.indexOf(this.normalizeAnswer(answer)) >= 0;
-      if (correct) {
-        _.remove(this.qsStillIncorrect, q => q === this.currentQuestion);
+      this.qsStillIncorrect = _.drop(this.qsStillIncorrect);
+      if (!correct) {
+        this.qsStillIncorrect.push(this.currentQuestion);
       }
       if (this.done()) {
         this.currentStudy.endTime = new Date(Date.now());
@@ -100,9 +100,10 @@ export class StatusService {
 
   private normalizeAnswer(answer: string) {
     answer = answer.replace(/ *\([^)]*\) */g, ""); //remove parentheses
-    answer = answer.replace(/[&-.'* 。　]/g, ""); //remove special chars
+    answer = answer.replace(/[\/&-.'* 。　]/g, ""); //remove special chars
     answer = _.trim(_.toLower(answer)); //lower case and remove whitespace
-    return answer.replace(/s$/, ''); //remove trailing -s for plural
+    answer = answer.replace(/s$/, ''); //remove trailing -s for plural
+    return answer.replace(/th$/, ''); //remove trailing -th
   }
 
   done(): boolean {
