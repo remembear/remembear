@@ -1,5 +1,5 @@
 <div (window:keydown.enter)="next()">
-  <h1>{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
+  <h1 (click)="status.playCurrentWordAudio()">{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
   <br>
   <h2>{{status.currentQuestion.fullAnswers}}</h2>
   <br>

@@ -2,11 +2,15 @@ import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 
 import { UserStatus, Question, Study, Answer } from './types';
+import { SETS } from './consts';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
 @Injectable()
 export class StatusService {
+
+  public GRAPH_WIDTH = 500;
+  public GRAPH_HEIGHT = 100;
 
   private username: string;
   private currentStudy: Study;
@@ -14,9 +18,12 @@ export class StatusService {
   private answers: Map<Question, Answer>;
 
   public status: UserStatus;
-  public pointsLine = "";
+  public pointsGraph = "";
+  public studiesGraph = "";
+  public timeGraph = "";
   public currentQuestion: Question;
   public isAudioQuestion: boolean;
+  public showInfo: boolean;
   public currentAnswerString: string;
   private currentAnswer: Answer;
   private answerStartTime: number;
@@ -32,15 +39,22 @@ export class StatusService {
       status = await this.apiService.getUserStatus(this.username);
     }
     this.status = status;
-    this.updatePointsLine();
+    this.status.thinkingPerDay = this.status.thinkingPerDay.map(t => _.round(t));
+    this.updateGraphs();
   }
 
-  private updatePointsLine() {
-    if (this.status.pointsByDay.length > 1) {
-      let norm = 50/_.max(this.status.pointsByDay);
-      let interval = 500/(this.status.pointsByDay.length-1);
-      this.pointsLine = this.status.pointsByDay
-        .map((p,i) => (i*interval)+","+(50-(norm*p))).join(" ");
+  private updateGraphs() {
+    this.pointsGraph = this.toGraph(this.status.pointsPerDay);
+    this.studiesGraph = this.toGraph(this.status.studiesPerDay);
+    this.timeGraph = this.toGraph(this.status.thinkingPerDay);
+  }
+
+  private toGraph(values: number[]) {
+    if (values.length > 1) {
+      let norm = this.GRAPH_HEIGHT/_.max(values);
+      let interval = this.GRAPH_WIDTH/(values.length-1);
+      return values
+        .map((p,i) => (i*interval)+","+(this.GRAPH_HEIGHT+1-(norm*p))).join(" ");
     }
   }
 
@@ -66,6 +80,8 @@ export class StatusService {
     this.answered = false;
     this.currentQuestion = this.qsStillIncorrect[0];
     this.isAudioQuestion = this.currentQuestion.question.indexOf('.mp3') > 0;
+    this.showInfo = !this.isAudioQuestion
+      && !(this.currentStudy.set == 1 && this.currentStudy.direction == 1);
     this.currentAnswer = this.answers.get(this.currentQuestion);
     this.answerStartTime = Date.now();
     if (this.isAudioQuestion) {

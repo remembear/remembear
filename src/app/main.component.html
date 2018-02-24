@@ -1,21 +1,27 @@
 <div *ngIf="status.status">
   <h1>{{status.username}} ({{status.status.totalPoints}} points)</h1>
+  <h3>word levels: {{status.status.wordsKnownByLevel}}</h3>
   <div style="text-align:center;">
-    <svg height="50" width="500">
-      <polyline [attr.points]="status.pointsLine"
+    <svg height="70" width="500">
+      <polyline [attr.points]="status.pointsGraph"
         style="fill:none;stroke:black;stroke-width:1" />/>
+      <polyline [attr.points]="status.studiesGraph"
+        style="fill:none;stroke:blue;stroke-width:1" />/>
+      <polyline [attr.points]="status.timeGraph"
+        style="fill:none;stroke:red;stroke-width:1" />/>
     </svg>
   </div>
-  <h3>daily points: {{status.status.pointsByDay}}</h3>
-  <h3>word levels: {{status.status.wordsKnownByLevel}}</h3>
-  <h3>latest points: {{status.status.latestPoints}}</h3>
+  <p>daily points: {{status.status.pointsPerDay.slice(-7)}}<br>
+  <span [ngStyle]="{'color':'blue'}">daily studies: {{status.status.studiesPerDay.slice(-7)}}</span><br>
+  <span [ngStyle]="{'color':'red'}">daily thinking: {{status.status.thinkingPerDay.slice(-7)}}</span><br>
+  latest points: {{status.status.latestPoints}}</p>
   <img src="assets/panda.png" width=70>
   <div *ngFor="let set of sets; let s = index">
     <div *ngFor="let dir of set.directionNames; let d = index">
       {{set.name}} {{dir}} ({{status.status.wordsKnownByDirection[s][d]}})
       <button [disabled]="s == 2 || (s == 0 && d == 1)"
         (click)="new(s,d)">learn new</button>
-      <button (click)="review(s,d)" [disabled]="status.status.wordsToReviewByDirection[s][d] < 1">
+      <button (click)="review(s,d)" [disabled]="status.status.wordsToReviewByDirection[s][d] < 10">
         review ({{status.status.wordsToReviewByDirection[s][d]}})</button>
     </div>
   </div>

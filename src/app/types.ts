@@ -19,13 +19,16 @@ export interface UserStatus {
   wordsKnownByDirection: number[][], //sum by direction
   wordsToReviewByDirection: number[][],
   totalPoints: number,
-  pointsByDay: number[],
+  pointsPerDay: number[],
+  durationPerDay: number[],
+  studiesPerDay: number[],
+  thinkingPerDay: number[],
   latestPoints: number
 }
 
 export interface Study {
   type: string,
-  collection: string,
+  set: number,
   direction: number,
   startTime: Date,
   endTime: Date,

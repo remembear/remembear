@@ -8,7 +8,7 @@ html, body {
 }
 
 /* override ngdialog theme too.. */
-h1, h2, h3, h4, p, body, button, input, select, .ngdialog.ngdialog-theme-default .ngdialog-content {
+h1, h2, h3, h4, h5, p, body, button, input, select, .ngdialog.ngdialog-theme-default .ngdialog-content {
   font-family: Avenir Next, 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', sans-serif !important;
   text-align: center;
   font-weight: 200;
