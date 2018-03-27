@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StatusService } from './status.service';
 
-import { Set } from './types';
-import { SETS } from './consts';
+import { Set } from './shared/types';
+import { SETS } from './shared/consts';
 
 @Component({
   templateUrl: './main.component.html'

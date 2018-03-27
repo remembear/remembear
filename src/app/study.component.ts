@@ -6,7 +6,7 @@ import { StatusService } from './status.service';
   templateUrl: './study.component.html'
 })
 export class StudyComponent {
-  private DELAY = 2000;
+  private DELAY = 3000;
   private timeout;
   private answer: string;
   private checked: boolean;
@@ -21,7 +21,7 @@ export class StudyComponent {
     this.answer = "";
     this.checked = false;
     this.bgColor = 'White';
-    if (!this.status.done()) {
+    if (!this.status.done) {
       this.status.nextQuestion();
     } else {
       this.router.navigate(['/main']);

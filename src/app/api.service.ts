@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Study, UserStatus } from './types';
+import { Study, UserStatus } from './shared/types';
 import { User } from './auth.service';
 
 @Injectable()

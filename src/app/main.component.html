@@ -17,8 +17,8 @@
   latest points: {{status.status.latestPoints}}</p>
   <img src="assets/panda.png" width=70>
   <div *ngFor="let set of sets; let s = index">
-    <div *ngFor="let dir of set.directionNames; let d = index">
-      {{set.name}} {{dir}} ({{status.status.wordsKnownByDirection[s][d]}})
+    <div *ngFor="let dir of set.directions; let d = index">
+      {{set.name}} {{dir.name}} ({{status.status.wordsKnownByDirection[s][d]}})
       <button [disabled]="s == 2 || (s == 0 && d == 1)"
         (click)="new(s,d)">learn new</button>
       <button (click)="review(s,d)" [disabled]="status.status.wordsToReviewByDirection[s][d] < 10">

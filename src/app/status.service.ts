@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 
-import { UserStatus, Question, Study, Answer } from './types';
-import { SETS } from './consts';
+import { UserStatus, Question, Study, Answer } from './shared/types';
+import { SETS } from './shared/consts';
+import { normalizeSingleAnswer } from './shared/util';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
@@ -25,6 +26,7 @@ export class StatusService {
   public isAudioQuestion: boolean;
   public showInfo: boolean;
   public currentAnswerString: string;
+  public done: boolean;
   private currentAnswer: Answer;
   private answerStartTime: number;
   private answered: boolean;
@@ -59,6 +61,7 @@ export class StatusService {
   }
 
   async startNewStudy(setIndex: number, dirIndex: number) {
+    console.log(this.getCurrentLocalTimeAsUTC())
     this.currentStudy = await this.apiService.getNewQuestions(this.username, setIndex, dirIndex);
     this.startStudy();
   }
@@ -69,11 +72,12 @@ export class StatusService {
   }
 
   private startStudy() {
+    this.done = false;
     this.qsStillIncorrect = _.shuffle(this.currentStudy.questions);
     this.answers = new Map();
     this.qsStillIncorrect.forEach(q =>
       this.answers.set(q, {wordId: q.wordId, attempts: []}));
-    this.currentStudy.startTime = new Date(Date.now());
+    this.currentStudy.startTime = this.getCurrentLocalTimeAsUTC();
   }
 
   async nextQuestion(): Promise<Question> {
@@ -93,37 +97,35 @@ export class StatusService {
   checkAnswer(answer: string): boolean {
     if (!this.answered) {
       this.answered = true;
-      this.playCurrentWordAudio();
+      if (!this.isAudioQuestion) {
+        this.playCurrentWordAudio();
+      }
       //update answer
       this.currentAnswerString = answer;
       let attempt = {answer: answer, duration: Date.now()-this.answerStartTime};
       this.currentAnswer.attempts.push(attempt);
       //check if correct
-      let correct = this.currentQuestion.answers.indexOf(this.normalizeAnswer(answer)) >= 0;
+      let correct;
+      if (this.currentStudy.set === 2) {
+        //this.currentQuestion.answers[0] === this.
+      } else {
+        //console.log(normalizeSingleAnswer(answer), this.currentQuestion.answers)
+        correct = this.currentQuestion.answers.indexOf(normalizeSingleAnswer(answer)) >= 0;
+      }
       this.qsStillIncorrect = _.drop(this.qsStillIncorrect);
       if (!correct) {
         this.qsStillIncorrect.push(this.currentQuestion);
       }
-      if (this.done()) {
-        this.currentStudy.endTime = new Date(Date.now());
+      if (this.qsStillIncorrect.length === 0) { //done
+        this.done = true;
+        this.currentStudy.endTime = this.getCurrentLocalTimeAsUTC();
         this.currentStudy.answers = Array.from(this.answers.values());
         this.apiService.sendResults(this.currentStudy, this.authService.username)
-          .then(s => this.updateUserStatus(s));
+          .then(s => this.updateUserStatus(s))
+          //.then(() => this.done = true);
       }
       return correct;
     }
-  }
-
-  private normalizeAnswer(answer: string) {
-    answer = answer.replace(/ *\([^)]*\) */g, ""); //remove parentheses
-    answer = answer.replace(/[\/&-.'* 。　]/g, ""); //remove special chars
-    answer = _.trim(_.toLower(answer)); //lower case and remove whitespace
-    answer = answer.replace(/s$/, ''); //remove trailing -s for plural
-    return answer.replace(/th$/, ''); //remove trailing -th
-  }
-
-  done(): boolean {
-    return this.qsStillIncorrect.length === 0;
   }
 
   playCurrentWordAudio() {
@@ -133,6 +135,12 @@ export class StatusService {
       audio.load();
       audio.play();
     }
+  }
+
+  private getCurrentLocalTimeAsUTC(): Date {
+    let date = new Date(Date.now());
+    date.setTime(date.getTime() - date.getTimezoneOffset()*60*1000)// - 24*60*60*1000)
+    return date;
   }
 
 }
