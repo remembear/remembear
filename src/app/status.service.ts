@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { UserStatus, Question, Study, Answer } from './shared/types';
 import { SETS } from './shared/consts';
-import { normalizeSingleAnswer } from './shared/util';
+import { normalizeSingleAnswer, normalizeSentenceAnswer } from './shared/util';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
@@ -61,7 +61,7 @@ export class StatusService {
   }
 
   async startNewStudy(setIndex: number, dirIndex: number) {
-    console.log(this.getCurrentLocalTimeAsUTC())
+    //console.log(this.getCurrentLocalTimeAsUTC())
     this.currentStudy = await this.apiService.getNewQuestions(this.username, setIndex, dirIndex);
     this.startStudy();
   }
@@ -83,6 +83,8 @@ export class StatusService {
   async nextQuestion(): Promise<Question> {
     this.answered = false;
     this.currentQuestion = this.qsStillIncorrect[0];
+    this.currentQuestion.options = this.currentQuestion.options ?
+      _.shuffle(this.currentQuestion.options) : undefined;
     this.isAudioQuestion = this.currentQuestion.question.indexOf('.mp3') > 0;
     this.showInfo = !this.isAudioQuestion
       && !(this.currentStudy.set == 1 && this.currentStudy.direction == 1);
@@ -107,7 +109,8 @@ export class StatusService {
       //check if correct
       let correct;
       if (this.currentStudy.set === 2) {
-        //this.currentQuestion.answers[0] === this.
+        correct = normalizeSentenceAnswer(this.currentQuestion.answers[0])
+          === normalizeSentenceAnswer(answer)
       } else {
         //console.log(normalizeSingleAnswer(answer), this.currentQuestion.answers)
         correct = this.currentQuestion.answers.indexOf(normalizeSingleAnswer(answer)) >= 0;

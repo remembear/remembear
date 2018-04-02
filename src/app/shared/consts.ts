@@ -59,6 +59,10 @@ export const SETS: Set[] = [{
     {
       name: "Reading", numOptions: 10, question: SEN_JAP, answer: SEN_ENG,
       extras: [SEN_JAP]
+    },
+    {
+      name: "Writing", numOptions: 10, question: SEN_ENG, answer: SEN_JAP,
+      extras: []
     }
   ],
   info: [],

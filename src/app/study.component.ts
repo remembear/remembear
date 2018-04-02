@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StatusService } from './status.service';
@@ -28,7 +29,11 @@ export class StudyComponent {
     }
   }
 
-  private check() {
+  private setAnswer(answer: string) {
+    this.answer = answer;
+  }
+
+  private check(answer?: string) {
     //only check once!
     if (!this.checked) {
       this.checked = true;

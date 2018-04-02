@@ -3,9 +3,18 @@
   <p *ngIf="status.showInfo">{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <br>
-  <input autofocus2 id="answ" name="answ" class="form-control answer-input"
+  <input *ngIf="!status.currentQuestion.options" autofocus2 id="answ" name="answ" class="form-control answer-input"
     width="100%" [(ngModel)]="answer" #answ="ngModel"
     [ngStyle]="{'background-color': bgColor}" autocomplete="off">
+  <div>
+    <span *ngFor="let opt of status.currentQuestion.options; let o = index">
+      <button (click)="setAnswer(opt)"
+          [ngStyle]="{'font-size': '200%', 'background-color': opt === answer ? bgColor: 'white'}">
+        {{opt}}
+      </button>
+      <br *ngIf="o % 5 == 4">
+    </span>
+  </div>
   <br>
   <br>
   <h4 *ngIf="status.answered">{{status.currentQuestion.fullAnswers}}</h4>
