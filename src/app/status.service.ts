@@ -7,6 +7,20 @@ import { normalizeSingleAnswer, normalizeSentenceAnswer } from './shared/util';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
+export interface Graph {
+  name: string,
+  values: number[],
+  pointString: string,
+  color: string,
+  style: {}
+}
+
+interface GraphType {
+  name: string,
+  color: string,
+  series: number[]
+}
+
 @Injectable()
 export class StatusService {
 
@@ -19,9 +33,8 @@ export class StatusService {
   private answers: Map<Question, Answer>;
 
   public status: UserStatus;
-  public pointsGraph = "";
-  public studiesGraph = "";
-  public timeGraph = "";
+
+  public graphs: Graph[][] = [];
   public currentQuestion: Question;
   public isAudioQuestion: boolean;
   public showInfo: boolean;
@@ -46,17 +59,40 @@ export class StatusService {
   }
 
   private updateGraphs() {
-    this.pointsGraph = this.toGraph(this.status.pointsPerDay);
-    this.studiesGraph = this.toGraph(this.status.studiesPerDay);
-    this.timeGraph = this.toGraph(this.status.thinkingPerDay);
+    const thinkingPerStudy =
+      _.zipWith(this.status.thinkingPerDay, this.status.studiesPerDay, _.divide)
+        .map(v => _.round(v, 2))
+    const types: GraphType[] = [
+      {name:"studies", color:"blue", series: this.status.studiesPerDay},
+      {name:"new learned", color:"lightblue", series: this.status.newPerDay},
+      {name:"thinking", color:"red", series: this.status.thinkingPerDay},
+      {name:"points", color:"black", series: this.status.pointsPerDay}
+    ]
+    this.graphs.push(types.map(t => this.toGraph(t, "daily ")));
+    this.graphs.push(types.map(t => this.toGraph(t, "weekly ", 7)));
+    this.graphs.push(types.map(t => this.toGraph(t, "monthly ", 30)));
   }
 
-  private toGraph(values: number[]) {
+  private toGraph(type: GraphType, namePrefix: string, summarize?: number): Graph {
+    let values = _.clone(type.series);
+    if (summarize) {
+      values.reverse();
+      values = _.chunk(values, summarize).map(c => _.sum(c));
+      values.reverse();
+    }
     if (values.length > 1) {
-      let norm = this.GRAPH_HEIGHT/_.max(values);
-      let interval = this.GRAPH_WIDTH/(values.length-1);
-      return values
-        .map((p,i) => (i*interval)+","+(this.GRAPH_HEIGHT+1-(norm*p))).join(" ");
+      const norm = this.GRAPH_HEIGHT/_.max(values);
+      const interval = this.GRAPH_WIDTH/(values.length-1);
+      const pointString = values
+        .map((p,i) => (i*interval)+","+(this.GRAPH_HEIGHT+1-(norm*p)))
+        .join(" ");
+      return {
+        name: namePrefix + type.name,
+        values: values,
+        pointString: pointString,
+        color: type.color,
+        style: {'fill':'none','stroke':type.color,'stroke-width':1}
+      }
     }
   }
 
@@ -107,13 +143,15 @@ export class StatusService {
       let attempt = {answer: answer, duration: Date.now()-this.answerStartTime};
       this.currentAnswer.attempts.push(attempt);
       //check if correct
-      let correct;
-      if (this.currentStudy.set === 2) {
-        correct = normalizeSentenceAnswer(this.currentQuestion.answers[0])
-          === normalizeSentenceAnswer(answer)
-      } else {
-        //console.log(normalizeSingleAnswer(answer), this.currentQuestion.answers)
-        correct = this.currentQuestion.answers.indexOf(normalizeSingleAnswer(answer)) >= 0;
+      let correct = false;
+      if (answer.length > 0) { //always false when empty string
+        if (this.currentStudy.set === 2) {
+          correct = normalizeSentenceAnswer(this.currentQuestion.answers[0])
+            === normalizeSentenceAnswer(answer)
+        } else {
+          //console.log(normalizeSingleAnswer(answer), this.currentQuestion.answers)
+          correct = this.currentQuestion.answers.indexOf(normalizeSingleAnswer(answer)) >= 0;
+        }
       }
       this.qsStillIncorrect = _.drop(this.qsStillIncorrect);
       if (!correct) {
@@ -142,7 +180,9 @@ export class StatusService {
 
   private getCurrentLocalTimeAsUTC(): Date {
     let date = new Date(Date.now());
-    date.setTime(date.getTime() - date.getTimezoneOffset()*60*1000)// - 24*60*60*1000)
+    let offset = 0; //days
+    date.setTime(date.getTime() - date.getTimezoneOffset()*60*1000 - 24*offset*60*60*1000)
+    //console.log("current offset:", offset, "days, time: ", new Date(date))
     return date;
   }
 

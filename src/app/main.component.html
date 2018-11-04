@@ -1,20 +1,17 @@
 <div *ngIf="status.status">
   <h1>{{status.username}} ({{status.status.totalPoints}} points)</h1>
   <h3>word levels: {{status.status.wordsKnownByLevel}}</h3>
-  <div style="text-align:center;">
-    <svg height="70" width="500">
-      <polyline [attr.points]="status.pointsGraph"
-        style="fill:none;stroke:black;stroke-width:1" />/>
-      <polyline [attr.points]="status.studiesGraph"
-        style="fill:none;stroke:blue;stroke-width:1" />/>
-      <polyline [attr.points]="status.timeGraph"
-        style="fill:none;stroke:red;stroke-width:1" />/>
+  <div style="text-align:center;" (click)="swapGraphs()">
+    <svg height="100" width="500">
+      <polyline *ngFor="let g of status.graphs[graphIndex]"
+        [attr.points]="g.pointString" [ngStyle]="g.style" />/>
     </svg>
   </div>
-  <p>daily points: {{status.status.pointsPerDay.slice(-7)}}<br>
-  <span [ngStyle]="{'color':'blue'}">daily studies: {{status.status.studiesPerDay.slice(-7)}}</span><br>
-  <span [ngStyle]="{'color':'red'}">daily thinking: {{status.status.thinkingPerDay.slice(-7)}}</span><br>
-  latest points: {{status.status.latestPoints}}</p>
+  <p>
+    <span *ngFor="let g of status.graphs[graphIndex]" [ngStyle]="{'color':g.color}">
+      {{g.name + ": " + g.values.slice(-7).join(" ")}}<br></span>
+    latest points: {{status.status.latestPoints}}
+  </p>
   <img src="assets/panda.png" width=70>
   <div *ngFor="let set of sets; let s = index">
     <div *ngFor="let dir of set.directions; let d = index">
