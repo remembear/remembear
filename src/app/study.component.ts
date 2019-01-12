@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { StatusService } from './status.service';
+import { StatusService } from './services/status.service';
 
 @Component({
   templateUrl: './study.component.html'
@@ -37,22 +37,32 @@ export class StudyComponent {
     //only check once!
     if (!this.checked) {
       this.checked = true;
-      this.correct = this.status.checkAnswer(this.answer);
-      if (this.correct) {
-        this.bgColor = 'PaleGreen';
-        this.timeout = setTimeout(this.next.bind(this), this.DELAY);
-      } else {
-        this.bgColor = 'LightCoral';
-        this.timeout = setTimeout(() => this.router.navigate(['/view']), this.DELAY);
-      }
+      this.setCorrect(this.status.checkAnswer(this.answer));
     } else if (this.checked) {
-      //shortcut
+      //accelerate
       clearTimeout(this.timeout);
       if (this.correct) {
         this.next();
       } else {
         setTimeout(() => this.router.navigate(['/view']), 50);
       }
+    }
+  }
+  
+  private shouldHaveBeenAccepted() {
+    this.setCorrect(true);
+    this.status.shouldHaveBeenAccepted(this.answer);
+  }
+  
+  private setCorrect(correct: boolean) {
+    if (this.timeout) clearTimeout(this.timeout);
+    this.correct = correct;
+    if (this.correct) {
+      this.bgColor = 'PaleGreen';
+      this.timeout = setTimeout(this.next.bind(this), this.DELAY);
+    } else {
+      this.bgColor = 'LightCoral';
+      this.timeout = setTimeout(() => this.router.navigate(['/view']), this.DELAY);
     }
   }
 

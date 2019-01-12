@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 
-import { UserStatus, Question, Study, Answer } from './shared/types';
-import { SETS } from './shared/consts';
-import { normalizeSingleAnswer, normalizeSentenceAnswer } from './shared/util';
+import { UserStatus, Question, Study, Answer } from '../shared/types';
+import { SETS } from '../shared/consts';
+import { normalizeSingleAnswer, normalizeSentenceAnswer } from '../shared/util';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
@@ -158,15 +158,30 @@ export class StatusService {
       if (!correct) {
         this.qsStillIncorrect.push(this.currentQuestion);
       }
-      if (this.qsStillIncorrect.length === 0) { //done
-        this.done = true;
-        this.currentStudy.endTime = this.getCurrentLocalTimeAsUTC();
-        this.currentStudy.answers = Array.from(this.answers.values());
-        this.apiService.sendResults(this.currentStudy, this.authService.username)
-          .then(s => this.updateUserStatus(s))
-          //.then(() => this.done = true);
-      }
+      this.endStudyIfDone();
       return correct;
+    }
+  }
+  
+  shouldHaveBeenAccepted(answer: string) {
+    this.qsStillIncorrect = _.dropRight(this.qsStillIncorrect);
+    this.endStudyIfDone();
+    this.apiService.editAnswer({
+      set: this.currentStudy.set,
+      direction: this.currentStudy.direction,
+      wordId: this.currentQuestion.wordId,
+      answer: answer
+    }, this.username);
+  }
+  
+  private endStudyIfDone() {
+    if (this.qsStillIncorrect.length === 0) { //done
+      this.done = true;
+      this.currentStudy.endTime = this.getCurrentLocalTimeAsUTC();
+      this.currentStudy.answers = Array.from(this.answers.values());
+      this.apiService.sendResults(this.currentStudy, this.authService.username)
+        .then(s => this.updateUserStatus(s))
+        //.then(() => this.done = true);
     }
   }
 

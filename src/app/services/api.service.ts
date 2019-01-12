@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Study, UserStatus } from './shared/types';
+import { Study, UserStatus, Edit } from '../shared/types';
 import { User } from './auth.service';
 
 @Injectable()
@@ -23,6 +23,10 @@ export class ApiService {
 
   getReviewQuestions(username: string, setIndex: number, dirIndex: number): Promise<Study> {
     return this.getJsonFromApi('review', {username: username, setIndex: setIndex, dirIndex: dirIndex});
+  }
+  
+  async editAnswer(edit: Edit, username: string): Promise<UserStatus> {
+    return await this.postJsonToApi('edit', edit, {username: username});
   }
 
   async sendResults(study: Study, username: string): Promise<UserStatus> {

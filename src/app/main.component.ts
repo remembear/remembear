@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { StatusService, Graph } from './status.service';
+import { StatusService, Graph } from './services/status.service';
 
 import { Set } from './shared/types';
 import { SETS } from './shared/consts';

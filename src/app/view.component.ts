@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { StatusService } from './status.service';
+import { StatusService } from './services/status.service';
 
 @Component({
   templateUrl: './view.component.html'

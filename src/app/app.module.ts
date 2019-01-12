@@ -10,10 +10,10 @@ import { StudyComponent } from './study.component';
 import { ViewComponent } from './view.component';
 import { AutofocusDirective } from './autofocus.directive';
 
-import { ApiService } from './api.service';
-import { AuthGuardService } from './auth-guard.service';
-import { AuthService } from './auth.service';
-import { StatusService } from './status.service';
+import { ApiService } from './services/api.service';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AuthService } from './services/auth.service';
+import { StatusService } from './services/status.service';
 
 const appRoutes: Routes = [
   { path: 'main', component: MainComponent, canActivate: [AuthGuardService] },
