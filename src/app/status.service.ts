@@ -67,7 +67,8 @@ export class StatusService {
       {name:"new learned", color:"lightblue", series: this.status.newPerDay},
       {name:"thinking", color:"red", series: this.status.thinkingPerDay},
       {name:"points", color:"black", series: this.status.pointsPerDay}
-    ]
+    ];
+    this.graphs = [];
     this.graphs.push(types.map(t => this.toGraph(t, "daily ")));
     this.graphs.push(types.map(t => this.toGraph(t, "weekly ", 7)));
     this.graphs.push(types.map(t => this.toGraph(t, "monthly ", 30)));
@@ -80,7 +81,7 @@ export class StatusService {
       values = _.chunk(values, summarize).map(c => _.sum(c));
       values.reverse();
     }
-    if (values.length > 1) {
+    if (values.length > 0) {
       const norm = this.GRAPH_HEIGHT/_.max(values);
       const interval = this.GRAPH_WIDTH/(values.length-1);
       const pointString = values
