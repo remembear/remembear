@@ -163,14 +163,14 @@ export class StatusService {
     }
   }
   
-  shouldHaveBeenAccepted(answer: string) {
+  shouldHaveBeenAccepted() {
     this.qsStillIncorrect = _.dropRight(this.qsStillIncorrect);
     this.endStudyIfDone();
     this.apiService.editAnswer({
       set: this.currentStudy.set,
       direction: this.currentStudy.direction,
       wordId: this.currentQuestion.wordId,
-      answer: answer
+      answer: this.currentAnswerString
     }, this.username);
   }
   

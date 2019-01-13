@@ -16,10 +16,6 @@
     </span>
   </div>
   <br>
-  <button type="button" *ngIf="status.answered && !this.correct && !status.currentQuestion.options"
-      (click)="shouldHaveBeenAccepted()">
-    Should have been accepted!
-  </button>
   <br>
   <br>
   <h4 *ngIf="status.answered">{{status.currentQuestion.fullAnswers}}</h4>

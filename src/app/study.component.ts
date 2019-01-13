@@ -37,7 +37,14 @@ export class StudyComponent {
     //only check once!
     if (!this.checked) {
       this.checked = true;
-      this.setCorrect(this.status.checkAnswer(this.answer));
+      this.correct = this.status.checkAnswer(this.answer);
+      if (this.correct) {
+        this.bgColor = 'PaleGreen';
+        this.timeout = setTimeout(this.next.bind(this), this.DELAY);
+      } else {
+        this.bgColor = 'LightCoral';
+        this.timeout = setTimeout(() => this.router.navigate(['/view']), this.DELAY);
+      }
     } else if (this.checked) {
       //accelerate
       clearTimeout(this.timeout);
@@ -46,23 +53,6 @@ export class StudyComponent {
       } else {
         setTimeout(() => this.router.navigate(['/view']), 50);
       }
-    }
-  }
-  
-  private shouldHaveBeenAccepted() {
-    this.setCorrect(true);
-    this.status.shouldHaveBeenAccepted(this.answer);
-  }
-  
-  private setCorrect(correct: boolean) {
-    if (this.timeout) clearTimeout(this.timeout);
-    this.correct = correct;
-    if (this.correct) {
-      this.bgColor = 'PaleGreen';
-      this.timeout = setTimeout(this.next.bind(this), this.DELAY);
-    } else {
-      this.bgColor = 'LightCoral';
-      this.timeout = setTimeout(() => this.router.navigate(['/view']), this.DELAY);
     }
   }
 

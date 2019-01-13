@@ -1,4 +1,4 @@
-<div (window:keydown.enter)="next()" (mousedown)="next()">
+<div (window:keydown.enter)="next()" (mouseup)="next()">
   <h1 (click)="status.playCurrentWordAudio()">{{status.isAudioQuestion ? "🔊" : status.currentQuestion.question}}</h1>
   <br>
   <h2>{{status.currentQuestion.fullAnswers}}</h2>
@@ -9,4 +9,8 @@
   <p>{{status.currentQuestion.info.join(' | ')}}</p>
   <br>
   <h4>You answered: {{status.currentAnswerString}}</h4>
+  <br>
+  <button type="button" (click)="status.shouldHaveBeenAccepted()">
+    Should have been accepted!
+  </button>
 </div>
