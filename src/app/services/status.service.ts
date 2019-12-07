@@ -96,6 +96,11 @@ export class StatusService {
       }
     }
   }
+  
+  async pushBackReviews() {
+    await this.apiService.delayMemories(this.username);
+    await this.updateUserStatus();
+  }
 
   async startNewStudy(setIndex: number, dirIndex: number) {
     //console.log(this.getCurrentLocalTimeAsUTC())

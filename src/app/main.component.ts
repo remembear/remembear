@@ -12,6 +12,7 @@ export class MainComponent {
 
   private sets = SETS;
   protected graphIndex = 0;
+  protected statusText = "";
 
   constructor(private status: StatusService, public router: Router) {}
 
@@ -27,6 +28,13 @@ export class MainComponent {
 
   swapGraphs() {
     this.graphIndex = (this.graphIndex + 1) % this.status.graphs.length;
+  }
+  
+  async pushBackReviews() {
+    this.statusText = "pushing back.......";
+    await this.status.pushBackReviews();
+    this.statusText = "done!";
+    setTimeout(() => this.statusText = "", 2000);
   }
 
 }
