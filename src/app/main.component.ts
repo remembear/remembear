@@ -36,5 +36,12 @@ export class MainComponent {
     this.statusText = "done!";
     setTimeout(() => this.statusText = "", 2000);
   }
+  
+  async pushForwardReviews() {
+    this.statusText = "pushing forward.......";
+    await this.status.pushForwardReviews();
+    this.statusText = "done!";
+    setTimeout(() => this.statusText = "", 2000);
+  }
 
 }

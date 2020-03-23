@@ -36,6 +36,10 @@ export class ApiService {
   async delayMemories(username: string): Promise<UserStatus> {
     return await this.getJsonFromApi('delay', {username: username});
   }
+  
+  async expediteMemories(username: string): Promise<UserStatus> {
+    return await this.getJsonFromApi('expedite', {username: username});
+  }
 
   private postJsonToApi(path: string, json: {}, params?: {}) {
     path = this.addParams(path, params);

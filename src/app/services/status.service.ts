@@ -101,6 +101,11 @@ export class StatusService {
     await this.apiService.delayMemories(this.username);
     await this.updateUserStatus();
   }
+  
+  async pushForwardReviews() {
+    await this.apiService.expediteMemories(this.username);
+    await this.updateUserStatus();
+  }
 
   async startNewStudy(setIndex: number, dirIndex: number) {
     //console.log(this.getCurrentLocalTimeAsUTC())
