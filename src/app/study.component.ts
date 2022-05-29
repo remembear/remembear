@@ -13,6 +13,9 @@ export class StudyComponent {
   private checked: boolean;
   private correct: boolean;
   private bgColor: string;
+  private TIME_LIMIT = 10;
+  private timeRemaining: number;
+  private timer;
 
   constructor(private status: StatusService, public router: Router) {
     this.next();
@@ -24,8 +27,17 @@ export class StudyComponent {
     this.bgColor = 'White';
     if (!this.status.done) {
       this.status.nextQuestion();
+      this.timeRemaining = this.TIME_LIMIT;
+      this.timer = setInterval(this.decrementTimer.bind(this), 1000);
     } else {
       this.router.navigate(['/main']);
+    }
+  }
+
+  private decrementTimer() {
+    this.timeRemaining--;
+    if (this.timeRemaining === 0) {
+      this.check();
     }
   }
 
@@ -33,10 +45,11 @@ export class StudyComponent {
     this.answer = answer;
   }
 
-  private check(answer?: string) {
+  private check() {
     //only check once!
     if (!this.checked) {
       this.checked = true;
+      clearInterval(this.timer);
       this.correct = this.status.checkAnswer(this.answer);
       if (this.correct) {
         this.bgColor = 'PaleGreen';
