@@ -28,6 +28,7 @@ export class StudyComponent {
     if (!this.status.done) {
       this.status.nextQuestion();
       this.timeRemaining = this.TIME_LIMIT;
+      if (this.status.currentQuestion.options) { this.timeRemaining *= 2; }
       this.timer = setInterval(this.decrementTimer.bind(this), 1000);
     } else {
       this.router.navigate(['/main']);
