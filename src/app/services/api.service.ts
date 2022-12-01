@@ -6,7 +6,7 @@ import { User } from './auth.service';
 @Injectable()
 export class ApiService {
 
-  private API_URL = "https://remembear-api.herokuapp.com/";//"http://localhost:8060/";
+  private API_URL = 'https://remembear2.onrender.com/'; //https://remembear-api.herokuapp.com/";//"http://localhost:8060/";
 
   login(user: User): Promise<boolean> {
     return this.getJsonFromApi('login', user)
